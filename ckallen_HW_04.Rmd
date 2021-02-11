@@ -1,0 +1,121 @@
+---
+title: "CSDE 502 HW 4"
+author: "Courtney K Allen"
+date: "02/03/2021"
+output: 
+  bookdown::html_document2
+
+---
+
+
+```{r data_vector, , echo=FALSE}
+gradpain <- c(rep(0,11), rep(1,1), rep(2,2), rep(3,6), rep(4,8), rep(5,10),rep(6,8), rep(7,30), rep(8,10), rep(9,6), rep(10,2))
+```
+
+
+```{r sample descriptions, echo=FALSE}
+gradpain_N <- length(gradpain)
+gradpain_mean <- mean(gradpain)
+```
+
+# Question 1
+
+The sample has `r gradpain_N` observations.
+
+
+# Question 2
+
+The mean of the sample is `r gradpain_mean`
+
+
+```{r box1, echo=FALSE}
+function_1 <- function(x) {
+  n <- length(x)
+  data_sample <- sample(x, size = n, replace = TRUE)
+  sample_mean <- mean(data_sample)
+  function_list <- c(n,sample_mean)
+  print(function_list)
+}
+  
+d.vec <- gradpain
+function_1(d.vec) 
+  
+```
+
+```{r box2, echo=FALSE}
+
+set.seed(7)
+hundred_means <- NULL
+
+# function above doesn't seem to save any objects so just repeat code anyway
+for (i in 1:100) {
+  function_1(gradpain)
+  n = length(gradpain)
+  data_sample <- sample(gradpain, size = n, replace = TRUE)
+  sample_mean <- mean(data_sample)
+  hundred_means <- c(hundred_means,sample_mean)
+}
+  
+```
+
+
+# Question 3
+
+The mean of these hundred means is `r round(mean(hundred_means),2)`.
+
+# Question 4
+
+The standard deviation of these hundred means is `r round(sd(hundred_means),2)`.
+
+
+```{r box3, echo=FALSE}
+
+mean_list <- NULL
+set.seed(7)
+function_2 <- function(d.vec, n, num.samples) {
+  for (i in 1:num.samples) {
+  data_sample <<- sample(d.vec, size = n, replace = TRUE)
+  sample_size <<- length(data_sample)
+  sample_num  <<- i
+  sample_mean <<- mean(data_sample)
+  mean_vector <<- c(mean_list,sample_mean)
+  mean_means  <<- mean(mean_vector)
+  sd_means    <<- sd(mean_vector)
+  mean_ci     <<- Rmisc::CI(x = mean_vector, ci = 0.95)
+  
+  return(function_list2 <- c(sample_size, sample_num, sample_mean, mean_vector, mean_means, sd_means, mean_ci))
+  }
+}
+
+d.vec <- gradpain
+n <- length(gradpain)
+num.samples <- 100
+
+function_2(d.vec, n, num.samples)
+
+
+```
+
+
+# Question 5
+
+The mean of all the means is `r round(mean_means,2)`.
+
+
+# Question 6
+
+The standard deviation of all the means is `r round(sd_means,2)`. 
+
+
+# Question 7
+
+The 95% CI around the mean is `r round(mean_ci,2)`.
+
+
+
+# Appendix: All code 
+
+
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
+
