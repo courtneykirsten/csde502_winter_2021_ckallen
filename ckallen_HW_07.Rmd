@@ -1,0 +1,84 @@
+---
+title: "CSDE 502 HW 7"
+author: "Courtney K Allen"
+date: "02/25/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+
+```{r library, include=FALSE}
+library(tidyverse)
+library(haven)
+library(labelled)
+library(kableExtra)
+library(magrittr)
+```
+
+
+```{r}
+AHdata <- read_dta("http://staff.washington.edu/phurvitz/csde502_winter_2021/data/AHwave1_v1.dta")
+```
+
+
+```{r}
+
+# select subset of data
+hw_data <- AHdata 
+
+hw_data <- hw_data %>% 
+    select(h1fs1,
+           h1fs2,
+           h1fs5,
+           h1fs8,
+           h1hr2a)
+
+
+
+hw_data <- hw_data %>% rename(
+   bother = h1fs1,
+   appetite = h1fs2,
+   focus = h1fs5,
+   hope = h1fs8,
+   gender = h1hr2a)
+
+
+# check all are factors
+str(hw_data)
+
+
+# save file
+tmpdir <- Sys.getenv("TEMP")
+write.csv(x = hw_data, file = file.path(tmpdir, "hw_data.csv"), row.names = FALSE)
+saveRDS(object = hw_data, file = file.path(tmpdir, "hw_data"))
+
+
+
+# create table
+hw_data %>% 
+  group_by(gender) %>% 
+    summarise(n = n()) %>% 
+    mutate(`%` = n / sum(n) * 100) %>% 
+    mutate(`%` = `%` %>% round(1)) %>% 
+    kable() %>% 
+    kable_styling(full_width = FALSE, position = "left")
+
+hw_data %>% 
+    group_by(gender,
+             hope) %>% 
+    summarise(n = n(), .groups = "drop_last") %>% 
+    mutate(`%` = n / sum(n) * 100) %>% 
+    mutate(`%` = `%` %>% round(1)) %>% 
+    kable() %>% 
+    kable_styling(full_width = FALSE, position = "left")
+
+ggplot(data = hw_data, 
+       mapping = aes(x = gender, y = hope)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
